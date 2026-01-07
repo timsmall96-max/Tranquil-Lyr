@@ -474,6 +474,7 @@ const root = document.documentElement.style;
 
 let CMU_DICT = null;
 
+
 window.addEventListener("DOMContentLoaded", () => {
   fetch("/cumudict.json")
     .then(res => {
@@ -485,6 +486,7 @@ window.addEventListener("DOMContentLoaded", () => {
     .then(data => {
       CMU_DICT = data;
       console.log("CMU Dictionary loaded:", Object.keys(data).length);
+      updateGutter(); // ← this is the important line
     })
     .catch(err => {
       console.error("CMU Dictionary load error:", err);
@@ -537,12 +539,25 @@ loadSettings();
 
 /* === Syllable Count === */
 function countSyllables(word) {
-  word = word.toLowerCase().replace(/[^a-z]/g, "");
-  if (word.length <= 3) return word ? 1 : 0;
-  word = word.replace(/e$/, "");
-  const g = word.match(/[aeiouy]+/g);
+  if (!word) return 0;
+
+  const clean = word.toLowerCase().replace(/[^a-z']/g, "");
+
+  // ✅ Use CMU dictionary if loaded
+  if (CMU_DICT && CMU_DICT[clean]) {
+    // CMU format: array of phoneme arrays
+    // Count vowel phonemes (they end in a digit)
+    const pronunciation = CMU_DICT[clean][0];
+    return pronunciation.filter(p => /\d$/.test(p)).length;
+  }
+
+  // 🔁 Fallback heuristic (your original logic)
+  if (clean.length <= 3) return clean ? 1 : 0;
+  const w = clean.replace(/e$/, "");
+  const g = w.match(/[aeiouy]+/g);
   return g ? g.length : 1;
 }
+
 
 function updateGutter() {
   gutter.textContent = editor.innerText
