@@ -1,25 +1,21 @@
 export async function handler(event) {
   try {
-    // Reject non-POST requests
     if (event.httpMethod !== "POST") {
       return {
         statusCode: 405,
-        body: JSON.stringify({ error: "Method Not Allowed" })
+        body: JSON.stringify({ error: "Method not allowed" })
       };
     }
 
-    // Parse incoming message
     const body = JSON.parse(event.body || "{}");
-    const message = body.message;
 
-    if (!message) {
+    if (!body.message) {
       return {
         statusCode: 400,
         body: JSON.stringify({ error: "No message sent" })
       };
     }
 
-    // Call OpenAI
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -30,7 +26,7 @@ export async function handler(event) {
         model: "gpt-4o-mini",
         messages: [
           { role: "system", content: "You are a helpful songwriting assistant." },
-          { role: "user", content: message }
+          { role: "user", content: body.message }
         ],
         temperature: 0.7
       })
@@ -38,12 +34,14 @@ export async function handler(event) {
 
     const data = await response.json();
 
-    // OpenAI error handling
-    if (!data.choices || !data.choices[0]) {
-      console.error("OpenAI error:", data);
+    // If OpenAI returns an error, forward it
+    if (!data.choices || !data.choices.length) {
       return {
         statusCode: 500,
-        body: JSON.stringify({ error: "OpenAI API error" })
+        body: JSON.stringify({
+          error: "OpenAI failed",
+          raw: data
+        })
       };
     }
 
@@ -55,11 +53,11 @@ export async function handler(event) {
     };
 
   } catch (err) {
-    console.error("Function crash:", err);
     return {
       statusCode: 500,
       body: JSON.stringify({ error: err.message })
     };
   }
 }
+
 
