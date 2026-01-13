@@ -1,29 +1,36 @@
 export async function handler(event) {
   try {
-    const { message } = JSON.parse(event.body);
+    const { message } = JSON.parse(event.body || "{}");
 
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    if (!message) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: "No message sent" })
+      };
+    }
+
+    const res = await fetch("https://api.openai.com/v1/responses", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
       },
       body: JSON.stringify({
-        model: "gpt-4o-mini",
-        messages: [
-          { role: "system", content: "You are a helpful songwriting assistant." },
-          { role: "user", content: message }
-        ]
+        model: "gpt-4.1-mini",
+        input: message
       })
     });
 
-    const data = await response.json();
+    const data = await res.json();
+
+    // Extract text safely
+    const reply =
+      data.output?.[0]?.content?.[0]?.text ||
+      "AI returned no text.";
 
     return {
       statusCode: 200,
-      body: JSON.stringify({
-        reply: data.choices[0].message.content
-      })
+      body: JSON.stringify({ reply })
     };
 
   } catch (err) {
