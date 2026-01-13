@@ -7,12 +7,13 @@ export async function handler(event) {
       };
     }
 
-    const { message } = JSON.parse(event.body || "{}");
+    const body = JSON.parse(event.body || "{}");
 
+    const message = body.message;
     if (!message) {
       return {
         statusCode: 400,
-        body: JSON.stringify({ error: "No message sent" })
+        body: JSON.stringify({ error: "No message provided" })
       };
     }
 
@@ -30,15 +31,30 @@ export async function handler(event) {
 
     const data = await response.json();
 
-    const reply =
-      data.output_text ||
-      data.output?.[0]?.content?.[0]?.text ||
-      "No AI response";
+    // SAFELY extract text from all known OpenAI formats
+    let reply = "";
+
+    if (data.output_text) {
+      reply = data.output_text;
+    } else if (data.output && data.output.length) {
+      for (const item of data.output) {
+        if (item.content) {
+          for (const c of item.content) {
+            if (c.text) reply += c.text;
+          }
+        }
+      }
+    }
+
+    if (!reply) {
+      reply = "OpenAI returned no text. Raw response: " + JSON.stringify(data);
+    }
 
     return {
       statusCode: 200,
       body: JSON.stringify({ reply })
     };
+
   } catch (err) {
     return {
       statusCode: 500,
