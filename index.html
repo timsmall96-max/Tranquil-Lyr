@@ -622,40 +622,50 @@ const RHYME_COLORS = [
 
   return map;
 }
+function applyRhymeColors() {
+  if (!CMU_DICT) return; // ⬅️ IMPORTANT
 
-  function applyRhymeColors() {
-  clearRhymeHighlights();
-
+function applyRhymeColors() {
   const lines = editor.innerText.split("\n");
   const rhymeMap = getAllRhymes(lines);
 
   let colorIndex = 0;
+  const rhymeColors = {};
 
-  Object.entries(rhymeMap).forEach(([key, occurrences]) => {
-    if (occurrences.length < 2) return;
-
-    const color = RHYME_COLORS[colorIndex % RHYME_COLORS.length];
-    colorIndex++;
-
-    occurrences.forEach(({ lineIndex, word }) => {
-      const node = editor.childNodes[lineIndex];
-      if (!node || !node.innerHTML) return;
-
-      const isEndWord = getLastWord(lines[lineIndex]) === word;
-
-      node.innerHTML = node.innerHTML.replace(
-        new RegExp(`\\b(${word})\\b`, "i"),
-        `<span class="rhyme-highlight"
-          style="
-            color:${color};
-            ${isEndWord ? "font-weight:600;" : "opacity:0.7;text-decoration:underline;"}
-          ">
-          $1
-        </span>`
-      );
-    });
+  // Assign colors only to real rhymes
+  Object.entries(rhymeMap).forEach(([key, occ]) => {
+    if (occ.length >= 2) {
+      rhymeColors[key] = RHYME_COLORS[colorIndex % RHYME_COLORS.length];
+      colorIndex++;
+    }
   });
+
+  const newHTML = lines.map((line, lineIndex) => {
+    let words = line.split(/\s+/);
+
+    words = words.map(word => {
+      const key = getRhymeKey(word);
+      if (!key || !rhymeColors[key]) return word;
+
+     const cleanWord = word.toLowerCase().replace(/[^a-z']/g, "");
+const isEndWord = getLastWord(line) === cleanWord;
+
+
+      return `<span class="rhyme-highlight"
+        style="
+          color:${rhymeColors[key]};
+          ${isEndWord
+            ? "font-weight:600;"
+            : "opacity:0.7;text-decoration:underline;"}
+        ">${word}</span>`;
+    });
+
+    return words.join(" ");
+  }).join("<br>");
+
+  editor.innerHTML = newHTML;
 }
+
 
 let rhymeTimer = null;
 
