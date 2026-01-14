@@ -574,6 +574,67 @@ const root = document.documentElement.style;
 const rhythmLight = document.getElementById("rhythmLight");
 const rhythmDebug = document.getElementById("rhythmDebug");
 
+  function getAllRhymes(lines) {
+  const map = {};
+
+  lines.forEach((line, lineIndex) => {
+    const words = line.split(/\s+/);
+
+    words.forEach((word, wordIndex) => {
+      const key = getRhymeKey(word);
+      if (!key) return;
+
+      if (!map[key]) map[key] = [];
+      map[key].push({ lineIndex, wordIndex, word });
+    });
+  });
+
+  return map;
+}
+
+  function applyRhymeColors() {
+  clearRhymeHighlights();
+
+  const lines = editor.innerText.split("\n");
+  const rhymeMap = getAllRhymes(lines);
+
+  let colorIndex = 0;
+
+  Object.entries(rhymeMap).forEach(([key, occurrences]) => {
+    if (occurrences.length < 2) return; // not a rhyme
+
+    const color = RHYME_COLORS[colorIndex % RHYME_COLORS.length];
+    colorIndex++;
+
+    occurrences.forEach(({ lineIndex, word }) => {
+      const node = editor.childNodes[lineIndex];
+      if (!node || !node.innerHTML) return;
+
+      const isEndWord = getLastWord(lines[lineIndex]) === word;
+
+      node.innerHTML = node.innerHTML.replace(
+        new RegExp(`\\b(${word})\\b`, "i"),
+        `<span class="rhyme-highlight"
+          style="
+            color:${color};
+            ${isEndWord ? "font-weight:600;" : "opacity:0.7;text-decoration:underline;"}
+          ">
+          $1
+        </span>`
+      );
+    });
+  });
+}
+
+  function clearRhymeHighlights() {
+  editor.querySelectorAll(".rhyme-highlight").forEach(span => {
+    span.replaceWith(span.textContent);
+  });
+}
+
+  editor.addEventListener("input", applyRhymeColors);
+
+
 /* ===============================
    LOAD CMU DICTIONARY (Netlify-safe)
    =============================== */
