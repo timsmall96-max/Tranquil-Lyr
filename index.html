@@ -623,9 +623,8 @@ const RHYME_COLORS = [
   return map;
 }
 function applyRhymeColors() {
-  if (!CMU_DICT) return; // ⬅️ IMPORTANT
+  if (!CMU_DICT) return; // ⬅️ guard stays
 
-function applyRhymeColors() {
   const lines = editor.innerText.split("\n");
   const rhymeMap = getAllRhymes(lines);
 
@@ -640,16 +639,15 @@ function applyRhymeColors() {
     }
   });
 
-  const newHTML = lines.map((line, lineIndex) => {
+  const newHTML = lines.map(line => {
     let words = line.split(/\s+/);
 
     words = words.map(word => {
       const key = getRhymeKey(word);
       if (!key || !rhymeColors[key]) return word;
 
-     const cleanWord = word.toLowerCase().replace(/[^a-z']/g, "");
-const isEndWord = getLastWord(line) === cleanWord;
-
+      const cleanWord = word.toLowerCase().replace(/[^a-z']/g, "");
+      const isEndWord = getLastWord(line) === cleanWord;
 
       return `<span class="rhyme-highlight"
         style="
@@ -665,6 +663,7 @@ const isEndWord = getLastWord(line) === cleanWord;
 
   editor.innerHTML = newHTML;
 }
+
 
 
 let rhymeTimer = null;
