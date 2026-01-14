@@ -573,6 +573,37 @@ const hint = document.getElementById("referenceHint");
 const root = document.documentElement.style;
 const rhythmLight = document.getElementById("rhythmLight");
 const rhythmDebug = document.getElementById("rhythmDebug");
+const RHYME_COLORS = [
+  "#ff6b6b", // red
+  "#feca57", // yellow
+  "#48dbfb", // blue
+  "#1dd1a1", // green
+  "#5f27cd", // purple
+  "#ff9ff3", // pink
+  "#54a0ff", // sky
+  "#00d2d3"  // teal
+];
+
+  function getRhymeKey(word) {
+  const clean = word.toLowerCase().replace(/[^a-z']/g, "");
+  if (!clean) return null;
+
+  // Use CMU dictionary if possible
+  if (CMU_DICT && CMU_DICT[clean]) {
+    const phones = CMU_DICT[clean][0];
+
+    // Take from last stressed vowel onward
+    for (let i = phones.length - 1; i >= 0; i--) {
+      if (/\d$/.test(phones[i])) {
+        return phones.slice(i).join("-");
+      }
+    }
+  }
+
+  // Fallback: crude spelling-based rhyme
+  if (clean.length > 3) return clean.slice(-3);
+  return null;
+}
 
   function getAllRhymes(lines) {
   const map = {};
@@ -740,6 +771,10 @@ function countSyllables(word) {
   const w = clean.replace(/e$/, "");
   const g = w.match(/[aeiouy]+/g);
   return g ? g.length : 1;
+}
+function getLastWord(line) {
+  const words = line.trim().split(/\s+/);
+  return words.length ? words[words.length - 1].toLowerCase() : "";
 }
 
 /* ===============================
