@@ -664,15 +664,29 @@ function applyRhymeColors() {
   editor.innerHTML = newHTML;
 }
 
+function isCaretInsideEditor() {
+  const sel = window.getSelection();
+  if (!sel || sel.rangeCount === 0) return false;
+  return editor.contains(sel.anchorNode);
+}
 
 
 let rhymeTimer = null;
 
 function scheduleRhymeUpdate() {
   clearTimeout(rhymeTimer);
-  rhymeTimer = setTimeout(applyRhymeColors, 400);
+
+  rhymeTimer = setTimeout(() => {
+    // ❌ Don't recolor while user is typing
+    if (isCaretInsideEditor()) return;
+
+    applyRhymeColors();
+  }, 600);
 }
+
 editor.addEventListener("input", scheduleRhymeUpdate);
+  editor.addEventListener("blur", applyRhymeColors);
+
 
 
 /* ===============================
