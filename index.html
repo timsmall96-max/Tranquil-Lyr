@@ -632,7 +632,7 @@ const RHYME_COLORS = [
   let colorIndex = 0;
 
   Object.entries(rhymeMap).forEach(([key, occurrences]) => {
-    if (occurrences.length < 2) return; // not a rhyme
+    if (occurrences.length < 2) return;
 
     const color = RHYME_COLORS[colorIndex % RHYME_COLORS.length];
     colorIndex++;
@@ -657,13 +657,13 @@ const RHYME_COLORS = [
   });
 }
 
-  function clearRhymeHighlights() {
-  editor.querySelectorAll(".rhyme-highlight").forEach(span => {
-    span.replaceWith(span.textContent);
-  });
-}
+let rhymeTimer = null;
 
-  editor.addEventListener("input", applyRhymeColors);
+function scheduleRhymeUpdate() {
+  clearTimeout(rhymeTimer);
+  rhymeTimer = setTimeout(applyRhymeColors, 400);
+}
+editor.addEventListener("input", scheduleRhymeUpdate);
 
 
 /* ===============================
