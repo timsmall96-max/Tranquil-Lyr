@@ -423,6 +423,9 @@ body.performance-mode .gutter {
     value="0.6"
   >
 
+
+
+
 </label>
 
 
@@ -446,9 +449,19 @@ body.performance-mode .gutter {
 
 </div>
 
+
+
 <button id="aiToggle">AI</button>
 
   <button id="rhymeToggle">Show Rhyme</button>
+
+<button id="saveToDropbox">
+  Save to Dropbox
+</button>
+
+<button id="loadFromDropbox">
+  Load from Dropbox
+</button>
 
 
 </div>
@@ -753,6 +766,7 @@ function makeSafeFilename(name) {
     .slice(0, 100) || "lyrics";
 }
 
+
 /* === Load Saved Settings === */
 const save = (k, v) => localStorage.setItem(k, v);
 const load = k => localStorage.getItem(k);
@@ -1056,6 +1070,21 @@ function parseFileContent(text) {
   localStorage.setItem(LYRICS_KEY, editor.innerHTML);
 }
 
+// 🔹 Dropbox load helper (GLOBAL — NOT nested)
+async function loadDropboxFile(url) {
+  try {
+    const res = await fetch(url);
+    const text = await res.text();
+
+    parseFileContent(text);
+
+    alert("Loaded from Dropbox");
+  } catch (err) {
+    console.error("Dropbox load error:", err);
+    alert("Failed to load file from Dropbox");
+  }
+}
+
 // SAVE (auto filename from title)
 document.getElementById("saveBtn").onclick = () => {
   const name =
@@ -1067,6 +1096,7 @@ document.getElementById("saveBtn").onclick = () => {
   a.download = name + ".txt";
   a.click();
 };
+
 
 // SAVE AS
 document.getElementById("saveAsBtn").onclick = () => {
@@ -1433,6 +1463,53 @@ function turnRhythmOff() {
 document.addEventListener("selectionchange", updateRhythmLight);
 editor.addEventListener("input", updateRhythmLight);
 
+
+
+
+
+document.getElementById("saveToDropbox").addEventListener("click", () => {
+  const title = document.getElementById("songTitle").value;
+  const lyrics = editor.innerText;
+
+  const filename =
+    makeSafeFilename(title || "Untitled") + ".txt";
+
+  const content =
+    (title ? title + "\n\n" : "") + lyrics;
+
+  const blob = new Blob([content], { type: "text/plain" });
+  const url = URL.createObjectURL(blob);
+
+  Dropbox.save({
+    files: [
+      {
+        url,
+        filename
+      }
+    ],
+    success: () => {
+      console.log("Saved to Dropbox:", filename);
+    },
+    error: err => {
+      console.error("Dropbox error:", err);
+      alert("Dropbox save failed");
+    }
+  });
+});
+
+document.getElementById("loadFromDropbox").addEventListener("click", () => {
+  Dropbox.choose({
+    linkType: "direct",
+    multiselect: false,
+    extensions: [".txt"],
+    success: files => {
+      const file = files[0];
+      loadDropboxFile(file.link);
+    }
+  });
+});
+
+
 // ===============================
 // AI DRAWER
 // ===============================
@@ -1521,5 +1598,11 @@ rhymeToggle.onclick = () => {
 
 </script>
 <div id="aiRoot"></div>
+<script
+  src="https://www.dropbox.com/static/api/2/dropins.js"
+  id="dropboxjs"
+  data-app-key="aqspa246xk6m1mt">
+</script>
+
 </body>
 </html>
