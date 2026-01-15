@@ -448,6 +448,8 @@ body.performance-mode .gutter {
 
 <button id="aiToggle">AI</button>
 
+  <button id="rhymeToggle">Show Rhyme</button>
+
 
 </div>
 
@@ -549,6 +551,8 @@ const RHYME_COLORS = [
   "#00d2d3"  // teal
 ];
 
+  let rhymeEnabled = false;
+
   function getRhymeKey(word) {
   const clean = word.toLowerCase().replace(/[^a-z']/g, "");
   if (!clean) return null;
@@ -587,7 +591,16 @@ const RHYME_COLORS = [
 
   return map;
 }
-function applyRhymeColors() {
+function isCaretInsideEditor() {
+  const sel = window.getSelection();
+  if (!sel || sel.rangeCount === 0) return false;
+
+  const range = sel.getRangeAt(0);
+  return editor.contains(range.commonAncestorContainer);
+}
+
+  
+  function applyRhymeColors() {
   if (!CMU_DICT) return; // ⬅️ guard stays
 
   const lines = editor.innerText.split("\n");
@@ -603,6 +616,8 @@ function applyRhymeColors() {
       colorIndex++;
     }
   });
+
+  
 
   const newHTML = lines.map(line => {
     let words = line.split(/\s+/);
@@ -629,28 +644,40 @@ function applyRhymeColors() {
   editor.innerHTML = newHTML;
 }
 
-function isCaretInsideEditor() {
-  const sel = window.getSelection();
-  if (!sel || sel.rangeCount === 0) return false;
-  return editor.contains(sel.anchorNode);
-}
+
 
 
 let rhymeTimer = null;
 
+  function removeRhymeColors() {
+  const spans = editor.querySelectorAll(".rhyme-highlight");
+
+  spans.forEach(span => {
+    const parent = span.parentNode;
+    while (span.firstChild) {
+      parent.insertBefore(span.firstChild, span);
+    }
+    parent.removeChild(span);
+    parent.normalize();
+  });
+}
+
+
+  
 function scheduleRhymeUpdate() {
+  if (!rhymeEnabled) return;
+
   clearTimeout(rhymeTimer);
 
   rhymeTimer = setTimeout(() => {
-    // ❌ Don't recolor while user is typing
     if (isCaretInsideEditor()) return;
-
     applyRhymeColors();
   }, 600);
 }
 
+
 editor.addEventListener("input", scheduleRhymeUpdate);
-  editor.addEventListener("blur", applyRhymeColors);
+ 
 
 
 
@@ -710,8 +737,10 @@ varianceSlider.oninput = e => {
 
 const stressSlider = document.getElementById("stressSlider");
 stressSlider.oninput = e => {
-  STRESS_STRICTNESS = +e.target.value;
+  // Inverted so LEFT = stricter, RIGHT = looser
+  STRESS_STRICTNESS = 1 - +e.target.value;
 };
+
 
 
 
@@ -1474,6 +1503,20 @@ async function sendToAI() {
 }
 
 
+const rhymeToggle = document.getElementById("rhymeToggle");
+
+rhymeToggle.onclick = () => {
+  rhymeEnabled = !rhymeEnabled;
+
+  rhymeToggle.classList.toggle("active", rhymeEnabled);
+  rhymeToggle.textContent = rhymeEnabled ? "Hide Rhyme" : "Show Rhyme";
+
+  if (rhymeEnabled) {
+    applyRhymeColors();
+  } else {
+    removeRhymeColors();
+  }
+};
 
 
 </script>
