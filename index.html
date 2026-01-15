@@ -455,6 +455,13 @@ body.performance-mode .gutter {
 
   <button id="rhymeToggle">Show Rhyme</button>
 
+
+<button id="connectDropbox">
+  Connect Dropbox
+</button>
+
+
+
 <button id="saveToDropbox">
   Save to Dropbox
 </button>
@@ -1594,6 +1601,51 @@ rhymeToggle.onclick = () => {
     removeRhymeColors();
   }
 };
+
+const DROPBOX_APP_KEY = "aqspa246xk6m1mt";
+const DROPBOX_TOKEN_KEY = "sl.u.AGOC4FpBBh9uongl45k-QS6xQn8trLZYiSFzvE0Os0yC1lVodIs679NSuzQ3k_Ew2x4D2kXjDTo-H45F5qv8mJKsIR6oGOTJn-XZkIIpI7g6KJrVY-oZDiU8lwG3TpFmzCwSrAl4Cqc1mIAMA6m932Oic78STFSxfcYLkGh-6vfK-LSXovxpzobjzfxMDgBzNAPSr7VN5hJHu3P-SizhbU3q8caapWeRMXNQ6frr9X2lthRlj9WIGx6x8EACfIUVju1poq-Yy1KcPkTYsFKoCuFP6Ndxf3k60lfm6eW0Re7jB-yp69ZACu9BWhjnRoGKop0T_CgLsrvCVTcjyH8HgfohyiLDZJHmR1itsEic0XBFYuJME0tFWP22_1SY1qjiP8RaCv4h8kAq9ivyHJbNIvd_9uM5-QZqpq9ObUzE3q6Dpp9dysu_m-nEEtjrbolgHQKovinxfsoQFi_VK8Mf4tDT37cQpaxDd7yUBJUpICQBJgOR5icTQyHCxKmjcJ3s9cD6JZMKTtvSG3WYtelM0NSXbuXYgCavcZ-kbDZYmxYX4vN1TXbdBGRFcPBfPV9gaed8iG5jiDK1gqcRBIGfUWccMNIPqlx9HQMecbCTnGRdXeEXMy4mdVrmgazcGnA8pW5xpJz-aYnrQNlGBoD0M3F6fKk-qQUxQvCVuiHzpJYsbpg0T6gnq0weW95eOxMxbcwBKEIcWJmKuw-K8GJoJEPFQIGUT3iS7SyseAs-lBTZUFkMXvnFL0RIboqxqCfdDWEoKMbV3PJqN7Y4A84WvNVze0C_htfxpTodrO0k6p3SsTcwroWy2YbZ549n1ZaOCZw8_GF4eX-F7fYUKUWzkR1sk4fCfsRFvhMUb157vPnOZjRt4CHkHs_PVaWDC4FGVIQMGsvJu_vyOydf_Ep8lBO7haC6JeOqCAGVs4zwhEQ2r3ErJvi-MV0cdXp9g2S-eLuk-WkEemcjWUVfjK04lfLs77hrfEVMTaqt3to7vFJHsum_7g7M2fq0sridINq0Z6vkUUTJrXeSPk0vprznXg_G4jNAQhj_t3wjtMwaP9pYgT8fWPeMQ_AR9CmUTDelSLWostuaLB2s7zEaMz9QPJ0jSKqYATTW3i5eKRymDj9MdwpDhyyLVh0yhKh4CmBZPCAy_3Q8zAbj93_kcxOKNg59xIzG8EHql-imrld9UQXvhIUMlOjDwX2vtI2xfH1ayBj52-xSA1d1ETJI8AbSKRBcklG6iLMovkjT_EATwzshOra_UBYbIdXCHlIVDy6HDmjXpdTWlgfvfL9tvBlTD3cRMthEc2Lq1ezltxB-XopmxaAPEawlkYmW-laxWO3i4t-97CUvQf_-CDrFewn70n57dlvPzk8nvpc--l7Pt0Ya6lJEExx6vqOW_tZzz9k_BJs1DbXRpMi9S9FptnseX66ZJ4RlzVgUT4Up9QlQa11xlA";
+
+// Start OAuth
+document.getElementById("connectDropbox").onclick = () => {
+  const redirectUri =
+    "https://tranquillyrics.netlify.app/auth/dropbox";
+
+  const authUrl =
+    "https://www.dropbox.com/oauth2/authorize" +
+    "?response_type=token" +
+    "&client_id=" + DROPBOX_APP_KEY +
+    "&redirect_uri=" + encodeURIComponent(redirectUri);
+
+  window.location.href = authUrl;
+};
+
+(function handleDropboxAuth() {
+  if (!window.location.hash) return;
+
+  const params = new URLSearchParams(
+    window.location.hash.substring(1)
+  );
+
+  const token = params.get("access_token");
+
+  if (token) {
+    localStorage.setItem(DROPBOX_TOKEN_KEY, token);
+
+    // Clean the URL
+    window.history.replaceState(
+      {},
+      document.title,
+      window.location.pathname
+    );
+
+    alert("Dropbox connected successfully!");
+  }
+})();
+
+function isDropboxConnected() {
+  return !!localStorage.getItem(DROPBOX_TOKEN_KEY);
+}
+
 
 
 </script>
