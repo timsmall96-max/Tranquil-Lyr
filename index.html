@@ -560,6 +560,12 @@ const hint = document.getElementById("referenceHint");
 const root = document.documentElement.style;
 const rhythmLight = document.getElementById("rhythmLight");
 const rhythmDebug = document.getElementById("rhythmDebug");
+  const DROPBOX_TOKEN_KEY = "dropbox_access_token";
+
+function getDropboxToken() {
+  return localStorage.getItem(DROPBOX_TOKEN_KEY);
+}
+
 const RHYME_COLORS = [
   "#ff6b6b", // red
   "#feca57", // yellow
@@ -570,6 +576,9 @@ const RHYME_COLORS = [
   "#54a0ff", // sky
   "#00d2d3"  // teal
 ];
+ 
+
+
 
   let rhymeEnabled = false;
 
@@ -1472,37 +1481,47 @@ editor.addEventListener("input", updateRhythmLight);
 
 
 
+document.getElementById("saveToDropbox").onclick = async () => {
+  const token = localStorage.getItem("dropbox_access_token");
 
-
-document.getElementById("saveToDropbox").addEventListener("click", () => {
-  const title = document.getElementById("songTitle").value;
-  const lyrics = editor.innerText;
+  if (!token) {
+    alert("Please connect Dropbox first.");
+    return;
+  }
 
   const filename =
-    makeSafeFilename(title || "Untitled") + ".txt";
+    makeSafeFilename(titleInput.value || "Untitled") + ".txt";
 
-  const content =
-    (title ? title + "\n\n" : "") + lyrics;
+  const content = getFileContent();
 
-  const blob = new Blob([content], { type: "text/plain" });
-  const url = URL.createObjectURL(blob);
+  try {
+    const res = await fetch("/.netlify/functions/dropbox-save", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        token,
+        filename,
+        content
+      })
+    });
 
-  Dropbox.save({
-    files: [
-      {
-        url,
-        filename
-      }
-    ],
-    success: () => {
-      console.log("Saved to Dropbox:", filename);
-    },
-    error: err => {
-      console.error("Dropbox error:", err);
-      alert("Dropbox save failed");
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || "Save failed");
     }
-  });
-});
+
+    alert("Saved to Dropbox ✓");
+  } catch (err) {
+    console.error(err);
+    alert("Dropbox save failed");
+  }
+};
+
+
+
 
 document.getElementById("loadFromDropbox").addEventListener("click", () => {
   Dropbox.choose({
@@ -1603,7 +1622,7 @@ rhymeToggle.onclick = () => {
 };
 
 const DROPBOX_APP_KEY = "aqspa246xk6m1mt";
-const DROPBOX_TOKEN_KEY = "sl.u.AGOC4FpBBh9uongl45k-QS6xQn8trLZYiSFzvE0Os0yC1lVodIs679NSuzQ3k_Ew2x4D2kXjDTo-H45F5qv8mJKsIR6oGOTJn-XZkIIpI7g6KJrVY-oZDiU8lwG3TpFmzCwSrAl4Cqc1mIAMA6m932Oic78STFSxfcYLkGh-6vfK-LSXovxpzobjzfxMDgBzNAPSr7VN5hJHu3P-SizhbU3q8caapWeRMXNQ6frr9X2lthRlj9WIGx6x8EACfIUVju1poq-Yy1KcPkTYsFKoCuFP6Ndxf3k60lfm6eW0Re7jB-yp69ZACu9BWhjnRoGKop0T_CgLsrvCVTcjyH8HgfohyiLDZJHmR1itsEic0XBFYuJME0tFWP22_1SY1qjiP8RaCv4h8kAq9ivyHJbNIvd_9uM5-QZqpq9ObUzE3q6Dpp9dysu_m-nEEtjrbolgHQKovinxfsoQFi_VK8Mf4tDT37cQpaxDd7yUBJUpICQBJgOR5icTQyHCxKmjcJ3s9cD6JZMKTtvSG3WYtelM0NSXbuXYgCavcZ-kbDZYmxYX4vN1TXbdBGRFcPBfPV9gaed8iG5jiDK1gqcRBIGfUWccMNIPqlx9HQMecbCTnGRdXeEXMy4mdVrmgazcGnA8pW5xpJz-aYnrQNlGBoD0M3F6fKk-qQUxQvCVuiHzpJYsbpg0T6gnq0weW95eOxMxbcwBKEIcWJmKuw-K8GJoJEPFQIGUT3iS7SyseAs-lBTZUFkMXvnFL0RIboqxqCfdDWEoKMbV3PJqN7Y4A84WvNVze0C_htfxpTodrO0k6p3SsTcwroWy2YbZ549n1ZaOCZw8_GF4eX-F7fYUKUWzkR1sk4fCfsRFvhMUb157vPnOZjRt4CHkHs_PVaWDC4FGVIQMGsvJu_vyOydf_Ep8lBO7haC6JeOqCAGVs4zwhEQ2r3ErJvi-MV0cdXp9g2S-eLuk-WkEemcjWUVfjK04lfLs77hrfEVMTaqt3to7vFJHsum_7g7M2fq0sridINq0Z6vkUUTJrXeSPk0vprznXg_G4jNAQhj_t3wjtMwaP9pYgT8fWPeMQ_AR9CmUTDelSLWostuaLB2s7zEaMz9QPJ0jSKqYATTW3i5eKRymDj9MdwpDhyyLVh0yhKh4CmBZPCAy_3Q8zAbj93_kcxOKNg59xIzG8EHql-imrld9UQXvhIUMlOjDwX2vtI2xfH1ayBj52-xSA1d1ETJI8AbSKRBcklG6iLMovkjT_EATwzshOra_UBYbIdXCHlIVDy6HDmjXpdTWlgfvfL9tvBlTD3cRMthEc2Lq1ezltxB-XopmxaAPEawlkYmW-laxWO3i4t-97CUvQf_-CDrFewn70n57dlvPzk8nvpc--l7Pt0Ya6lJEExx6vqOW_tZzz9k_BJs1DbXRpMi9S9FptnseX66ZJ4RlzVgUT4Up9QlQa11xlA";
+  const DROPBOX_TOKEN_KEY = "dropbox_access_token";
 
 // Start OAuth
 document.getElementById("connectDropbox").onclick = () => {
