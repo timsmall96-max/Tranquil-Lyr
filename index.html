@@ -1461,14 +1461,16 @@ performanceBtn.onclick = () => {
 };
 
 
+document.addEventListener("DOMContentLoaded", () => {
   const mobileControls = document.getElementById("mobileControls");
-const metroPanel = document.querySelector(".metronome-panel");
+  const metroPanel = document.querySelector(".metronome-panel");
 
-if (mobileControls) {
-  mobileControls.onclick = () => {
+  if (!mobileControls || !metroPanel) return;
+
+  mobileControls.addEventListener("click", () => {
     metroPanel.classList.toggle("open");
-  };
-}
+  });
+});
 
 
 
