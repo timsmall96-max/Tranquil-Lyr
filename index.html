@@ -465,6 +465,17 @@ body.performance-mode .gutter {
   }
 }
 
+    @media (max-width: 768px) {
+  .toolbar {
+    display: none;
+  }
+
+  .toolbar.open {
+    display: flex;
+  }
+}
+
+
 
   </style>
 </head>
@@ -1463,14 +1474,25 @@ performanceBtn.onclick = () => {
 
 document.addEventListener("DOMContentLoaded", () => {
   const mobileControls = document.getElementById("mobileControls");
+  const mobileToolbar = document.getElementById("mobileToolbar");
+
   const metroPanel = document.querySelector(".metronome-panel");
+  const toolbar = document.querySelector(".toolbar");
 
-  if (!mobileControls || !metroPanel) return;
+  if (mobileControls && metroPanel) {
+    mobileControls.addEventListener("click", () => {
+      metroPanel.classList.toggle("open");
+    });
+  }
 
-  mobileControls.addEventListener("click", () => {
-    metroPanel.classList.toggle("open");
-  });
+  if (mobileToolbar && toolbar) {
+    mobileToolbar.addEventListener("click", () => {
+      toolbar.classList.toggle("open");
+    });
+  }
 });
+
+
 
 
 
@@ -1795,5 +1817,9 @@ function isDropboxConnected() {
 <button id="mobileControls" class="mobile-fab">
   Controls
 </button>
+<button id="mobileToolbar" class="mobile-fab mobile-fab-left">
+  Tools
+</button>
+
 </body>
 </html>
