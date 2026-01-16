@@ -394,10 +394,6 @@ body.performance-mode .gutter {
     overflow-y: auto;
   }
 
-  .metronome-panel.open ~ .editor-wrapper {
-    padding-bottom: 55vh;
-  }
-
   .editor-wrapper {
     width: 100%;
     max-width: none;
@@ -418,6 +414,18 @@ body.performance-mode .gutter {
 
   .reference-panel {
     max-height: 35vh;
+  }
+}
+
+    @media (max-width: 768px) {
+  .reference-panel {
+    flex: none;
+    height: 35vh;
+    min-height: 0;
+  }
+
+  .reference-frame {
+    height: 100%;
   }
 }
 
