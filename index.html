@@ -443,6 +443,7 @@ body.performance-mode .gutter {
 
 /* Mobile only */
 @media (max-width: 768px) {
+
   .mobile-fab {
     display: inline-flex;
     align-items: center;
@@ -467,6 +468,24 @@ body.performance-mode .gutter {
     width: auto;
     height: auto;
     white-space: nowrap;
+  }
+
+  /* Toolbar toggle logic */
+  .toolbar {
+    display: none;
+  }
+
+  .toolbar.open {
+    display: flex;
+  }
+}
+
+
+  .toolbar.open {
+    display: flex;
+  }
+}
+
   }
 
   #mobileControls {
