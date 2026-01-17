@@ -430,35 +430,26 @@ body.performance-mode .gutter {
 }
 
 
+
+
 /* ===============================
-   FLOATING MOBILE CONTROLS BUTTON
+   FLOATING MOBILE BUTTONS (FINAL)
    =============================== */
 
+/* Desktop: NEVER show */
 .mobile-fab {
   display: none;
 }
 
-.mobile-fab {
-  width: auto;
-  display: inline-flex;
-}
-
-    
-@media (max-width: 768px) {
-  .mobile-fab-left {
-    right: auto;
-    left: 16px;
-  }
-}
-
-    
+/* Mobile only */
 @media (max-width: 768px) {
   .mobile-fab {
     display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
     position: fixed;
-    bottom: 16px;
     right: 16px;
-    z-index: 10000;
 
     padding: 12px 18px;
     border-radius: 999px;
@@ -472,6 +463,18 @@ body.performance-mode .gutter {
 
     box-shadow: 0 6px 20px rgba(0,0,0,0.4);
     cursor: pointer;
+
+    width: auto;
+    height: auto;
+    white-space: nowrap;
+  }
+
+  #mobileControls {
+    bottom: 16px;
+  }
+
+  #mobileToolbar {
+    bottom: 68px;
   }
 
   .mobile-fab:active {
@@ -479,81 +482,6 @@ body.performance-mode .gutter {
   }
 }
 
-    @media (max-width: 768px) {
-  #mobileControls {
-    bottom: 16px;
-  }
-
-  #mobileToolbar {
-    bottom: 68px; /* sits above Controls */
-  }
-}
-
-
-
-
-    @media (max-width: 768px) {
-  .metronome-panel {
-    align-items: stretch;
-    gap: 14px;
-    padding: 16px;
-  }
-}
-
-    @media (max-width: 768px) {
-  .metronome-panel > div {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-}
-
-@media (max-width: 768px) {
-  .metronome-panel label {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 6px;
-    font-size: 13px;
-  }
-
-  .metronome-panel input[type="range"] {
-    width: 100%;
-  }
-
-  .metronome-panel input[type="number"],
-  .metronome-panel select {
-    width: 100%;
-    text-align: center;
-  }
-}
-
-    @media (max-width: 768px) {
-  .metronome-panel button {
-    width: 100%;
-    padding: 10px;
-    font-size: 14px;
-  }
-}
-
-    @media (max-width: 768px) {
-  .toolbar {
-    display: none;
-  }
-
-  .toolbar.open {
-    display: flex;
-  }
-}
-
-    @media (max-width: 768px) {
-  #mobileControls,
-  #mobileToolbar {
-    width: auto !important;
-    max-width: max-content !important;
-    flex: none !important;
-  }
-}
 
 
   </style>
@@ -1892,13 +1820,9 @@ function isDropboxConnected() {
   id="dropboxjs"
   data-app-key="aqspa246xk6m1mt">
 </script>
-<!-- Mobile floating controls button -->
-<button id="mobileControls" class="mobile-fab">
-  Controls
-</button>
-<button id="mobileToolbar" class="mobile-fab">
-  Tools
-</button>
+<button id="mobileControls" class="mobile-fab">Controls</button>
+<button id="mobileToolbar" class="mobile-fab">Tools</button>
+
 
 
 </body>
