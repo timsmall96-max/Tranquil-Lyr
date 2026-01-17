@@ -433,10 +433,10 @@ body.performance-mode .gutter {
 
 
 /* ===============================
-   FLOATING MOBILE BUTTONS (FINAL)
+   MOBILE FLOATING BUTTONS (CLEAN)
    =============================== */
 
-/* Desktop: NEVER show */
+/* Desktop: never show */
 .mobile-fab {
   display: none;
 }
@@ -461,31 +461,11 @@ body.performance-mode .gutter {
 
     font-size: 14px;
     font-weight: 600;
+    white-space: nowrap;
 
     box-shadow: 0 6px 20px rgba(0,0,0,0.4);
     cursor: pointer;
-
-    width: auto;
-    height: auto;
-    white-space: nowrap;
-  }
-
-  /* Toolbar toggle logic */
-  .toolbar {
-    display: none;
-  }
-
-  .toolbar.open {
-    display: flex;
-  }
-}
-
-
-  .toolbar.open {
-    display: flex;
-  }
-}
-
+    z-index: 10000;
   }
 
   #mobileControls {
@@ -499,8 +479,55 @@ body.performance-mode .gutter {
   .mobile-fab:active {
     transform: scale(0.96);
   }
+
+  /* Toolbar toggle (Tools button) */
+  .toolbar {
+    display: none;
+  }
+
+  .toolbar.open {
+    display: flex;
+  }
 }
 
+
+@media (max-width: 768px) {
+
+  /* Controls drawer content = vertical list */
+  .metronome-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+  }
+
+  /* Any inner groups stack vertically */
+  .metronome-panel > div,
+  .metronome-panel label {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+
+  /* Inputs & buttons fill width */
+  .metronome-panel input,
+  .metronome-panel select,
+  .metronome-panel button {
+    width: 100%;
+  }
+
+  /* Range sliders look correct */
+  .metronome-panel input[type="range"] {
+    width: 100%;
+  }
+
+  /* Small text stays readable */
+  .metronome-panel span,
+  .metronome-panel label {
+    font-size: 13px;
+  }
+}
 
 
   </style>
