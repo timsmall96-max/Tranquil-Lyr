@@ -235,12 +235,13 @@
   width: 100%;
 }
 #radio-controls {
-  position: absolute;
+  position: sticky;
   bottom: 12px;
-  left: 8px;
+  margin-top: auto;      /* 👈 CRITICAL */
+  align-self: flex-start;
   display: flex;
   gap: 6px;
-  z-index: 10; /* ✅ ADD THIS */
+  z-index: 10;
 }
 
 #radio-controls button {
