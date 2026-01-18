@@ -753,12 +753,30 @@ const root = document.documentElement.style;
 const rhythmLight = document.getElementById("rhythmLight");
 const rhythmDebug = document.getElementById("rhythmDebug");
 const stations = [
-  { name: "LoFi Hip Hop Radio", url: "https://zeno.fm/lofi-hip-hop-radio" },
-  { name: "Hip Hop & Rap Radio", url: "https://live365.com/station/hip-hop-rap-music-radio-87665" },
-  { name: "Rock Radio (RauteMusik)", url: "https://stream.rautemusik.fm/rock" },
-  { name: "Sub.FM Bass & Grime", url: "https://subfm-radio.net:8000/subfm128" },
-  { name: "24/7 EDM Radio", url: "https://247onlineradio.com/24-7-edm-radio.mp3" },
-  { name: "DNBRadio (Drum & Bass)", url: "https://dnbradio.com:8000/dnbradio320" },
+  {
+    name: "Lo-fi (Study / Chill)",
+    url: "https://stream.chillhop.com/chillhop"
+  },
+  {
+    name: "Hip Hop",
+    url: "https://icecast.radiofrance.fr/mouvrapmidfi.mp3"
+  },
+  {
+    name: "Rock",
+    url: "https://stream.rautemusik.fm/rock"
+  },
+  {
+    name: "Grime / Bass",
+    url: "https://subfm-radio.net:8000/subfm128"
+  },
+  {
+    name: "Dance / EDM",
+    url: "https://icecast.radiofrance.fr/fipdance-midfi.mp3"
+  },
+  {
+    name: "Drum & Bass",
+    url: "https://dnbradio.com:8000/dnbradio320"
+  }
 ];
 const DROPBOX_APP_KEY = "aqspa246xk6m1mt";
 const DROPBOX_TOKEN_KEY = "dropbox_access_token";
@@ -1898,14 +1916,19 @@ const radioToggleBtn = document.getElementById("toggle-radio");
 let currentStation = 0;
 let isPlaying = false;
 
+
 function playStation(index) {
+  player.pause();
+  player.src = "";
   player.src = stations[index].url;
+
   player.play().then(() => {
     isPlaying = true;
     radioToggleBtn.textContent = "⏸";
-  }).catch(() => {});
+  }).catch(err => {
+    console.error("Radio play failed:", err);
+  });
 }
-
 radioToggleBtn.onclick = () => {
   if (isPlaying) {
     player.pause();
