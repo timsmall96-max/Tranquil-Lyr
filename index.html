@@ -1894,7 +1894,7 @@ function isDropboxConnected() {
 const player = document.getElementById("radio-player");
 const prevBtn = document.getElementById("prev-radio");
 const nextBtn = document.getElementById("next-radio");
-const toggleBtn = document.getElementById("toggle-radio");
+const radioToggleBtn = document.getElementById("toggle-radio");
 
 let currentStation = 0;
 let isPlaying = false;
@@ -1903,15 +1903,15 @@ function playStation(index) {
   player.src = stations[index].url;
   player.play().then(() => {
     isPlaying = true;
-    toggleBtn.textContent = "⏸";
+    radioToggleBtn.textContent = "⏸";
   }).catch(() => {});
 }
 
-toggleBtn.onclick = () => {
+radioToggleBtn.onclick = () => {
   if (isPlaying) {
     player.pause();
     isPlaying = false;
-    toggleBtn.textContent = "▶";
+    radioToggleBtn.textContent = "▶";
   } else {
     playStation(currentStation);
   }
