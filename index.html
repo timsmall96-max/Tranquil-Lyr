@@ -232,7 +232,27 @@
 .metronome-panel input[type="range"] {
   width: 100%;
 }
+#radio-controls {
+  position: absolute;
+  bottom: 12px;
+  left: 8px;
+  display: flex;
+  gap: 6px;
+}
 
+#radio-controls button {
+  background: rgba(255,255,255,0.1);
+  border: none;
+  color: #fff;
+  font-size: 14px;
+  padding: 6px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#radio-controls button:hover {
+  background: rgba(255,255,255,0.25);
+}
 
 /* ===============================
    REPETITION BUTTON POLISH
@@ -634,9 +654,14 @@ body.performance-mode .gutter {
   Load from Dropbox
 </button>
 
- 
 
+<div id="radio-controls">
+  <button id="prev-radio">⏮</button>
+  <button id="toggle-radio">▶</button>
+  <button id="next-radio">⏭</button>
+</div>
 
+<audio id="radio-player" preload="none"></audio>
 </div>
 
 
@@ -726,7 +751,14 @@ const hint = document.getElementById("referenceHint");
 const root = document.documentElement.style;
 const rhythmLight = document.getElementById("rhythmLight");
 const rhythmDebug = document.getElementById("rhythmDebug");
-
+const stations = [
+  { name: "LoFi Hip Hop Radio", url: "https://zeno.fm/lofi-hip-hop-radio" },
+  { name: "Hip Hop & Rap Radio", url: "https://live365.com/station/hip-hop-rap-music-radio-87665" },
+  { name: "Rock Radio (RauteMusik)", url: "https://stream.rautemusik.fm/rock" },
+  { name: "Sub.FM Bass & Grime", url: "https://subfm-radio.net:8000/subfm128" },
+  { name: "24/7 EDM Radio", url: "https://247onlineradio.com/24-7-edm-radio.mp3" },
+  { name: "DNBRadio (Drum & Bass)", url: "https://dnbradio.com:8000/dnbradio320" },
+];
 const DROPBOX_APP_KEY = "aqspa246xk6m1mt";
 const DROPBOX_TOKEN_KEY = "dropbox_access_token";
 
@@ -1857,8 +1889,44 @@ function isDropboxConnected() {
   return !!localStorage.getItem(DROPBOX_TOKEN_KEY);
 }
 
+const player = document.getElementById("radio-player");
+const prevBtn = document.getElementById("prev-radio");
+const nextBtn = document.getElementById("next-radio");
+const toggleBtn = document.getElementById("toggle-radio");
 
+let currentStation = 0;
+let isPlaying = false;
 
+function playStation(index) {
+  player.src = stations[index].url;
+  player.play().then(() => {
+    isPlaying = true;
+    toggleBtn.textContent = "⏸";
+  }).catch(() => {});
+}
+
+toggleBtn.onclick = () => {
+  if (isPlaying) {
+    player.pause();
+    isPlaying = false;
+    toggleBtn.textContent = "▶";
+  } else {
+    playStation(currentStation);
+  }
+};
+
+prevBtn.onclick = () => {
+  currentStation =
+    (currentStation - 1 + stations.length) % stations.length;
+  playStation(currentStation);
+};
+
+nextBtn.onclick = () => {
+  currentStation =
+    (currentStation + 1) % stations.length;
+  playStation(currentStation);
+};
+  
 </script>
 <div id="aiRoot"></div>
 <script
