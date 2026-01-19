@@ -762,39 +762,87 @@ const root = document.documentElement.style;
 const rhythmLight = document.getElementById("rhythmLight");
 const rhythmDebug = document.getElementById("rhythmDebug");
 const stations = [
-  // 🎷 JAZZ / SOUL
-  { name: "Jazz – Adroit Jazz Underground", url: "https://icecast.walmradio.com:8443/jazz" },
-  { name: "Jazz – FIP Jazz", url: "https://icecast.radiofrance.fr/fipjazz-midfi.mp3" },
-  { name: "Groove / Soul – FIP Groove", url: "https://icecast.radiofrance.fr/fipgroove-midfi.mp3" },
+  // 🎷 JAZZ / SOUL (VERY SOLID)
+  {
+    name: "Jazz – FIP Jazz",
+    url: "https://icecast.radiofrance.fr/fipjazz-midfi.mp3"
+  },
+  {
+    name: "Jazz – Adroit Jazz Underground",
+    url: "https://icecast.walmradio.com:8443/jazz"
+  },
+  {
+    name: "Soul / Groove – FIP Groove",
+    url: "https://icecast.radiofrance.fr/fipgroove-midfi.mp3"
+  },
 
-  // 🌿 CHILL / AMBIENT
-  { name: "Chill / Eclectic – FIP", url: "https://icecast.radiofrance.fr/fip-midfi.mp3" },
-  { name: "Ambient – SomaFM Drone Zone", url: "https://somafm.com/dronezone256.mp3" },
-  { name: "Ambient – SomaFM Deep Space One", url: "https://somafm.com/deepspaceone256.mp3" },
+  // 🌿 LO-FI / CHILL / FOCUS (SAFE & CONSISTENT)
+  {
+    name: "Chill – FIP Eclectic",
+    url: "https://icecast.radiofrance.fr/fip-midfi.mp3"
+  },
+  {
+    name: "Chill – Smooth Chill (UK)",
+    url: "https://media-ice.musicradio.com/SmoothChill"
+  },
+  {
+    name: "Ambient / Chill – Chillhop (public relay)",
+    url: "https://stream.zeno.fm/0r0xa792kwzuv"
+  },
 
-  // 🔊 ELECTRONIC / DANCE
-  { name: "Electronic – FIP Dance", url: "https://icecast.radiofrance.fr/fipdance-midfi.mp3" },
-  { name: "House / Techno – SomaFM Beat Blender", url: "https://somafm.com/beatblender256.mp3" },
-  { name: "Downtempo – SomaFM Groove Salad", url: "https://somafm.com/groovesalad256.mp3" },
-  { name: "Electronic – SomaFM DEF CON Radio", url: "https://somafm.com/defcon256.mp3" },
+  // 🎧 HIP-HOP / URBAN (UK-ADJACENT, RADIO 1 VIBE)
+  {
+    name: "Hip-Hop – Rinse FM (UK)",
+    url: "https://streamer.radio.co/sd90a6d0f1/listen"
+  },
+  {
+    name: "Hip-Hop / R&B – Flex FM",
+    url: "https://streamer.radio.co/s0c5a4a7f1/listen"
+  },
 
-  // 🎸 ROCK / ALTERNATIVE
-  { name: "Rock – FIP Rock", url: "https://icecast.radiofrance.fr/fiprock-midfi.mp3" },
-  { name: "Indie – SomaFM Indie Pop Rocks", url: "https://somafm.com/indiepop256.mp3" },
+  // 🔊 DANCE / ELECTRONIC (RADIO 1 ENERGY)
+  {
+    name: "Dance – FIP Dance",
+    url: "https://icecast.radiofrance.fr/fipdance-midfi.mp3"
+  },
+  {
+    name: "Electronic – Select Radio",
+    url: "https://streamer.radio.co/sfbb0c6d0f/listen"
+  },
+  {
+    name: "House / Dance – Dance UK",
+    url: "https://uk7.internet-radio.com/proxy/danceuk?mp=/stream"
+  },
 
-  // 🎤 HIP HOP / EXPERIMENTAL
-  { name: "Hip-Hop / Beats – SomaFM Digitalis", url: "https://somafm.com/digitalis256.mp3" },
-  { name: "Leftfield – SomaFM Mission Control", url: "https://somafm.com/missioncontrol256.mp3" },
+  // 🎸 INDIE / ALTERNATIVE
+  {
+    name: "Indie – Amazing Radio (UK)",
+    url: "https://stream.amazingradio.com/amazingradio"
+  },
+  {
+    name: "Alternative – Radio X Classic (Relay)",
+    url: "https://media-ice.musicradio.com/RadioXClassicRock"
+  },
 
-  // 🌍 WORLD / GLOBAL
-  { name: "World – FIP World", url: "https://icecast.radiofrance.fr/fipworld-midfi.mp3" },
-  { name: "Latin / Global – FIP Reggae", url: "https://icecast.radiofrance.fr/fipreggae-midfi.mp3" },
+  // 🌍 WORLD / ECLECTIC
+  {
+    name: "World – FIP World",
+    url: "https://icecast.radiofrance.fr/fipworld-midfi.mp3"
+  },
+  {
+    name: "Global Beats – Resonance FM",
+    url: "https://stream.resonance.fm/resonance"
+  },
 
-  // 🧠 FOCUS / ODDITIES
-  { name: "Experimental – SomaFM Suburbs of Goa", url: "https://somafm.com/suburbsofgoa256.mp3" },
-  { name: "Soundtracks – SomaFM Secret Agent", url: "https://somafm.com/secretagent256.mp3" },
-  { name: "Minimal – SomaFM Fluid", url: "https://somafm.com/fluid256.mp3" },
-  { name: "Classical / Modern – FIP Classique", url: "https://icecast.radiofrance.fr/fipclassique-midfi.mp3" }
+  // 🎼 CLASSICAL / FOCUS
+  {
+    name: "Classical – FIP Classique",
+    url: "https://icecast.radiofrance.fr/fipclassique-midfi.mp3"
+  },
+  {
+    name: "Modern Classical – Classic FM Calm",
+    url: "https://media-ice.musicradio.com/ClassicFM-M-Mellow"
+  }
 ];
 const DROPBOX_APP_KEY = "aqspa246xk6m1mt";
 const DROPBOX_TOKEN_KEY = "dropbox_access_token";
