@@ -1964,14 +1964,22 @@ async function playStation(index) {
     console.warn("❌ Failed:", station.name, err);
     setStatus(`Failed: ${station.name}`, true);
 
-    // Auto-skip
-    setTimeout(() => playStation(currentStation + 1), 700);
+    
+    
   }
 }
 
 player.addEventListener("error", () => {
-  setStatus(`Error: ${stations[currentStation].name}`, true);
-  playStation(currentStation + 1);
+  console.warn("Audio element error, resetting");
+
+  player.pause();
+  player.removeAttribute("src");
+  player.load();
+
+  isPlaying = false;
+  radioToggleBtn.textContent = "▶";
+
+  setStatus(`Stream error: ${stations[currentStation].name}`, true);
 });
 
 radioToggleBtn.onclick = () => {
