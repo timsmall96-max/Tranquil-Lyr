@@ -654,7 +654,16 @@ body.performance-mode .gutter {
 <button id="loadFromDropbox">
   Load from Dropbox
 </button>
-
+  
+<div id="radio-status" style="
+  font-size: 11px;
+  text-align: center;
+  opacity: 0.9;
+  min-height: 30px;
+  line-height: 1.3;
+">
+  Radio idle
+</div>
 
 <div id="radio-controls">
   <button id="prev-radio">⏮</button>
@@ -753,30 +762,39 @@ const root = document.documentElement.style;
 const rhythmLight = document.getElementById("rhythmLight");
 const rhythmDebug = document.getElementById("rhythmDebug");
 const stations = [
-  {
-    name: "Jazz (Working)",
-    url: "PASTE_YOUR_CURRENT_JAZZ_STREAM_HERE"
-  },
+  // 🎷 JAZZ / SOUL
+  { name: "Jazz – Adroit Jazz Underground", url: "https://icecast.walmradio.com:8443/jazz" },
+  { name: "Jazz – FIP Jazz", url: "https://icecast.radiofrance.fr/fipjazz-midfi.mp3" },
+  { name: "Groove / Soul – FIP Groove", url: "https://icecast.radiofrance.fr/fipgroove-midfi.mp3" },
 
-  {
-    name: "Lo-Fi / Chillhop",
-    url: "https://stream.nightride.fm/chillhop.mp3"
-  },
+  // 🌿 CHILL / AMBIENT
+  { name: "Chill / Eclectic – FIP", url: "https://icecast.radiofrance.fr/fip-midfi.mp3" },
+  { name: "Ambient – SomaFM Drone Zone", url: "https://somafm.com/dronezone256.mp3" },
+  { name: "Ambient – SomaFM Deep Space One", url: "https://somafm.com/deepspaceone256.mp3" },
 
-  {
-    name: "Ambient",
-    url: "https://icecast.radiofrance.fr/fip-midfi.mp3"
-  },
+  // 🔊 ELECTRONIC / DANCE
+  { name: "Electronic – FIP Dance", url: "https://icecast.radiofrance.fr/fipdance-midfi.mp3" },
+  { name: "House / Techno – SomaFM Beat Blender", url: "https://somafm.com/beatblender256.mp3" },
+  { name: "Downtempo – SomaFM Groove Salad", url: "https://somafm.com/groovesalad256.mp3" },
+  { name: "Electronic – SomaFM DEF CON Radio", url: "https://somafm.com/defcon256.mp3" },
 
-  {
-    name: "Classical",
-    url: "https://icecast.radiofrance.fr/francemusique-midfi.mp3"
-  },
+  // 🎸 ROCK / ALTERNATIVE
+  { name: "Rock – FIP Rock", url: "https://icecast.radiofrance.fr/fiprock-midfi.mp3" },
+  { name: "Indie – SomaFM Indie Pop Rocks", url: "https://somafm.com/indiepop256.mp3" },
 
-  {
-    name: "Groove / Soul",
-    url: "https://icecast.radiofrance.fr/fipgroove-midfi.mp3"
-  }
+  // 🎤 HIP HOP / EXPERIMENTAL
+  { name: "Hip-Hop / Beats – SomaFM Digitalis", url: "https://somafm.com/digitalis256.mp3" },
+  { name: "Leftfield – SomaFM Mission Control", url: "https://somafm.com/missioncontrol256.mp3" },
+
+  // 🌍 WORLD / GLOBAL
+  { name: "World – FIP World", url: "https://icecast.radiofrance.fr/fipworld-midfi.mp3" },
+  { name: "Latin / Global – FIP Reggae", url: "https://icecast.radiofrance.fr/fipreggae-midfi.mp3" },
+
+  // 🧠 FOCUS / ODDITIES
+  { name: "Experimental – SomaFM Suburbs of Goa", url: "https://somafm.com/suburbsofgoa256.mp3" },
+  { name: "Soundtracks – SomaFM Secret Agent", url: "https://somafm.com/secretagent256.mp3" },
+  { name: "Minimal – SomaFM Fluid", url: "https://somafm.com/fluid256.mp3" },
+  { name: "Classical / Modern – FIP Classique", url: "https://icecast.radiofrance.fr/fipclassique-midfi.mp3" }
 ];
 const DROPBOX_APP_KEY = "aqspa246xk6m1mt";
 const DROPBOX_TOKEN_KEY = "dropbox_access_token";
@@ -1907,49 +1925,68 @@ document.getElementById("connectDropbox").onclick = () => {
 function isDropboxConnected() {
   return !!localStorage.getItem(DROPBOX_TOKEN_KEY);
 }
-
 const player = document.getElementById("radio-player");
 const prevBtn = document.getElementById("prev-radio");
 const nextBtn = document.getElementById("next-radio");
 const radioToggleBtn = document.getElementById("toggle-radio");
+const radioStatus = document.getElementById("radio-status");
 
 let currentStation = 0;
 let isPlaying = false;
 
+function setStatus(text, error = false) {
+  radioStatus.textContent = text;
+  radioStatus.style.color = error ? "#f88" : "#cfc";
+}
 
-function playStation(index) {
+async function playStation(index) {
+  currentStation = (index + stations.length) % stations.length;
+  const station = stations[currentStation];
+
+  console.log("▶ Loading:", station.name);
+  setStatus(`Loading: ${station.name}`);
+
+  isPlaying = false;
+  radioToggleBtn.textContent = "▶";
+
   player.pause();
-  player.src = "";
-  player.src = stations[index].url;
+  player.removeAttribute("src");
+  player.load();
 
-  player.play().then(() => {
+  player.src = station.url;
+
+  try {
+    await player.play();
     isPlaying = true;
     radioToggleBtn.textContent = "⏸";
-  }).catch(err => {
-    console.error("Radio play failed:", err);
-  });
+    setStatus(`Playing: ${station.name}`);
+  } catch (err) {
+    console.warn("❌ Failed:", station.name, err);
+    setStatus(`Failed: ${station.name}`, true);
+
+    // Auto-skip
+    setTimeout(() => playStation(currentStation + 1), 700);
+  }
 }
+
+player.addEventListener("error", () => {
+  setStatus(`Error: ${stations[currentStation].name}`, true);
+  playStation(currentStation + 1);
+});
+
 radioToggleBtn.onclick = () => {
   if (isPlaying) {
     player.pause();
     isPlaying = false;
     radioToggleBtn.textContent = "▶";
+    setStatus("Paused");
   } else {
     playStation(currentStation);
   }
 };
 
-prevBtn.onclick = () => {
-  currentStation =
-    (currentStation - 1 + stations.length) % stations.length;
-  playStation(currentStation);
-};
-
-nextBtn.onclick = () => {
-  currentStation =
-    (currentStation + 1) % stations.length;
-  playStation(currentStation);
-};
+prevBtn.onclick = () => playStation(currentStation - 1);
+nextBtn.onclick = () => playStation(currentStation + 1);
   
 </script>
 <div id="aiRoot"></div>
