@@ -762,7 +762,7 @@ const root = document.documentElement.style;
 const rhythmLight = document.getElementById("rhythmLight");
 const rhythmDebug = document.getElementById("rhythmDebug");
 const stations = [
-  // 🎷 JAZZ / SOUL (VERY SOLID)
+  // 🎷 JAZZ / SOUL (CONFIRMED WORKING)
   {
     name: "Jazz – FIP Jazz",
     url: "https://icecast.radiofrance.fr/fipjazz-midfi.mp3"
@@ -771,57 +771,49 @@ const stations = [
     name: "Jazz – Adroit Jazz Underground",
     url: "https://icecast.walmradio.com:8443/jazz"
   },
-  {
-    name: "Soul / Groove – FIP Groove",
-    url: "https://icecast.radiofrance.fr/fipgroove-midfi.mp3"
-  },
 
-  // 🌿 LO-FI / CHILL / FOCUS (SAFE & CONSISTENT)
+  // 🌿 CHILL / LOFI-ADJACENT (REALISTIC & SAFE)
   {
     name: "Chill – FIP Eclectic",
     url: "https://icecast.radiofrance.fr/fip-midfi.mp3"
   },
   {
-    name: "Chill – Smooth Chill (UK)",
-    url: "https://media-ice.musicradio.com/SmoothChill"
+    name: "Ambient – Radio Art Ambient",
+    url: "https://live.radioart.com/fAmbient.mp3"
   },
   {
-    name: "Ambient / Chill – Chillhop (public relay)",
+    name: "Lo-Fi / Chillhop – Zeno Chillhop",
     url: "https://stream.zeno.fm/0r0xa792kwzuv"
   },
 
-  // 🎧 HIP-HOP / URBAN (UK-ADJACENT, RADIO 1 VIBE)
+  // 🎧 HIP-HOP / BEATS (SAFE)
   {
-    name: "Hip-Hop – Rinse FM (UK)",
-    url: "https://streamer.radio.co/sd90a6d0f1/listen"
+    name: "Hip-Hop / Beats – Radio Caprice Lo-Fi",
+    url: "http://79.120.39.202:9073"
   },
   {
-    name: "Hip-Hop / R&B – Flex FM",
-    url: "https://streamer.radio.co/s0c5a4a7f1/listen"
-  },
-
-  // 🔊 DANCE / ELECTRONIC (RADIO 1 ENERGY)
-  {
-    name: "Dance – FIP Dance",
-    url: "https://icecast.radiofrance.fr/fipdance-midfi.mp3"
-  },
-  {
-    name: "Electronic – Select Radio",
-    url: "https://streamer.radio.co/sfbb0c6d0f/listen"
-  },
-  {
-    name: "House / Dance – Dance UK",
-    url: "https://uk7.internet-radio.com/proxy/danceuk?mp=/stream"
+    name: "Hip-Hop Instrumental – Radio Caprice Beats",
+    url: "http://79.120.39.202:9037"
   },
 
-  // 🎸 INDIE / ALTERNATIVE
+  // 🔊 ELECTRONIC / DANCE (WORKING ICECAST)
   {
-    name: "Indie – Amazing Radio (UK)",
-    url: "https://stream.amazingradio.com/amazingradio"
+    name: "Electronic – Radio Caprice Deep House",
+    url: "http://79.120.39.202:9021"
   },
   {
-    name: "Alternative – Radio X Classic (Relay)",
-    url: "https://media-ice.musicradio.com/RadioXClassicRock"
+    name: "Electronic – Radio Caprice Minimal",
+    url: "http://79.120.39.202:9059"
+  },
+
+  // 🎸 INDIE / ALTERNATIVE (PUBLIC BROADCAST)
+  {
+    name: "Indie – Radio Paradise Indie",
+    url: "https://stream.radioparadise.com/indie-192"
+  },
+  {
+    name: "Eclectic – Radio Paradise Main",
+    url: "https://stream.radioparadise.com/mp3-192"
   },
 
   // 🌍 WORLD / ECLECTIC
@@ -829,19 +821,15 @@ const stations = [
     name: "World – FIP World",
     url: "https://icecast.radiofrance.fr/fipworld-midfi.mp3"
   },
-  {
-    name: "Global Beats – Resonance FM",
-    url: "https://stream.resonance.fm/resonance"
-  },
 
-  // 🎼 CLASSICAL / FOCUS
+  // 🎼 CLASSICAL / FOCUS (VERY SAFE)
   {
     name: "Classical – FIP Classique",
     url: "https://icecast.radiofrance.fr/fipclassique-midfi.mp3"
   },
   {
-    name: "Modern Classical – Classic FM Calm",
-    url: "https://media-ice.musicradio.com/ClassicFM-M-Mellow"
+    name: "Modern Classical – Radio Swiss Classic",
+    url: "https://stream.srg-ssr.ch/m/rsc_de/mp3_128"
   }
 ];
 const DROPBOX_APP_KEY = "aqspa246xk6m1mt";
